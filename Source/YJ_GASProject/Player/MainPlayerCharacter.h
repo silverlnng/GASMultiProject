@@ -17,6 +17,7 @@ class YJ_GASPROJECT_API AMainPlayerCharacter : public AMainCharacter
 	
 public:
 	AMainPlayerCharacter();
+	virtual void PawnClientRestart() override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 private:
