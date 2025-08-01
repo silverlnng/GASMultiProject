@@ -3,12 +3,29 @@
 
 #include "MainCharacter.h"
 
+#include "GAS/MainAbilitySystemComponent.h"
+#include "GAS/MainAttributeSet.h"
+
 // Sets default values
 AMainCharacter::AMainCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	
+	MAbilitySystemComponent = CreateDefaultSubobject<UMainAbilitySystemComponent>("MAbility System Component");
+	MAttributeSet = CreateDefaultSubobject<UMainAttributeSet>("MAttribute Set");
+}
+
+void AMainCharacter::ServerSideInit()
+{
+	MAbilitySystemComponent->InitAbilityActorInfo(this, this);
+	MAbilitySystemComponent->ApplyInitialEffects();
+}
+
+void AMainCharacter::ClientSideInit()
+{
+	MAbilitySystemComponent->InitAbilityActorInfo(this, this);
 }
 
 // Called when the game starts or when spawned
@@ -30,5 +47,10 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+}
+
+UAbilitySystemComponent* AMainCharacter::GetAbilitySystemComponent() const
+{
+	return MAbilitySystemComponent;
 }
 
