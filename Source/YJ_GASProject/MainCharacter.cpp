@@ -12,7 +12,8 @@ AMainCharacter::AMainCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	
+
+	// UAbilitySystemComponent 의 내부작동으로 MAbilitySystemComponent 와 MAttributeSet 가 서로의 존재에 대해 알고있음 . 
 	MAbilitySystemComponent = CreateDefaultSubobject<UMainAbilitySystemComponent>("MAbility System Component");
 	MAttributeSet = CreateDefaultSubobject<UMainAttributeSet>("MAttribute Set");
 }
@@ -20,6 +21,7 @@ AMainCharacter::AMainCharacter()
 void AMainCharacter::ServerSideInit()
 {
 	MAbilitySystemComponent->InitAbilityActorInfo(this, this);
+	// 서버에서 만 초기화 작업을 해주고 . 그 초기화 된 변수들은 replicate
 	MAbilitySystemComponent->ApplyInitialEffects();
 }
 
