@@ -13,5 +13,15 @@ UCLASS()
 class YJ_GASPROJECT_API UGameplayWidget : public UUserWidget
 {
 	GENERATED_BODY()
-	
+public:
+	virtual void NativeConstruct() override;
+private:
+	UPROPERTY(meta=(BindWidget))
+	class UGuageWidget* HealthBar;
+
+	UPROPERTY(meta=(BindWidget))
+	class UGuageWidget* ManaBar;
+
+	UPROPERTY()
+	class UAbilitySystemComponent* OwnerAbilitySystemComponent;
 };

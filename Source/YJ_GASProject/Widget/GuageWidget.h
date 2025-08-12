@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "AttributeSet.h"
+#include "GameplayEffectTypes.h"
 #include "GuageWidget.generated.h"
 
 struct FGameplayAttribute;
