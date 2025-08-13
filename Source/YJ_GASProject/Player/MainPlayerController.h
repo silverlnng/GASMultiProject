@@ -17,7 +17,7 @@ public:
 	// 오직 서버에서만 작동
 	void OnPossess(APawn* NewPawn) override;
 
-	// 오직 클라이언트 쪽에서만 작동 + 리슨서버인경우 작동 (리슨서버 :클라이언트가 서버이자 클라이언트 역할)
+	// 오직 클라이언트 쪽에서만 작동 + 리슨서버인경우 서버에서도 작동 (리슨서버 :클라이언트가 서버이자 클라이언트 역할)
 	void AcknowledgePossession(APawn* NewPawn) override;
 private:
 	UPROPERTY()

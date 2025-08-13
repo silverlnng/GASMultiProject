@@ -16,9 +16,12 @@ public:
 	AMainCharacter();
 	void ServerSideInit();
 	void ClientSideInit();
+	bool IsLocallyControlledByPlayer() const;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	// PossessedBy함수는  only called on the server.	
+	virtual void PossessedBy(AController* NewController) override;
 
 public:	
 	// Called every frame
@@ -37,4 +40,12 @@ private:
 	class UMainAbilitySystemComponent* MAbilitySystemComponent;
 	UPROPERTY()
 	class UMainAttributeSet* MAttributeSet;
+
+	/**********************************************************************/
+	/*                              UI                                    */
+	/**********************************************************************/
+private:
+	UPROPERTY(VisibleDefaultsOnly, Category = "Gameplay Ability")
+	class UWidgetComponent* OverHeadWidgetComponent;
+	void ConfigureOverHeadStatusWidget();
 };

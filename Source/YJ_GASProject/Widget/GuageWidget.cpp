@@ -2,7 +2,6 @@
 
 
 #include "GuageWidget.h"
-
 #include "AbilitySystemComponent.h"
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
@@ -26,6 +25,8 @@ void UGuageWidget::SetAndBoundToGameplayAttribute(class UAbilitySystemComponent*
 			SetValue(Value, MaxValue);
 		}
 
+		// AbilitySystemComponent 가 특정 FGameplayAttribute 의 값이 변경될때 함수를 호출하는 Delegate 가 있음
+		
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Attribute).AddUObject(this, &UGuageWidget::ValueChanged);
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(MaxAttribute).AddUObject(this, &UGuageWidget::MaxValueChanged);
 	}

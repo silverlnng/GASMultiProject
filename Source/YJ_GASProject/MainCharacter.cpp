@@ -3,8 +3,10 @@
 
 #include "MainCharacter.h"
 
+#include "Components/WidgetComponent.h"
 #include "GAS/MainAbilitySystemComponent.h"
 #include "GAS/MainAttributeSet.h"
+#include "Widget/OverHeadStatsGaugeWidget.h"
 
 // Sets default values
 AMainCharacter::AMainCharacter()
@@ -16,6 +18,9 @@ AMainCharacter::AMainCharacter()
 	// UAbilitySystemComponent 의 내부작동으로 MAbilitySystemComponent 와 MAttributeSet 가 서로의 존재에 대해 알고있음 . 
 	MAbilitySystemComponent = CreateDefaultSubobject<UMainAbilitySystemComponent>("MAbility System Component");
 	MAttributeSet = CreateDefaultSubobject<UMainAttributeSet>("MAttribute Set");
+
+	OverHeadWidgetComponent = CreateDefaultSubobject<UWidgetComponent>("Over Head Widget Component");
+	OverHeadWidgetComponent->SetupAttachment(GetRootComponent());
 }
 
 void AMainCharacter::ServerSideInit()
@@ -30,11 +35,31 @@ void AMainCharacter::ClientSideInit()
 	MAbilitySystemComponent->InitAbilityActorInfo(this, this);
 }
 
+bool AMainCharacter::IsLocallyControlledByPlayer() const
+{
+	// 리슨서버인 경우 : 서버역할을 하는 클라이언트의 역할
+
+	return GetController() && GetController()->IsLocalController();
+	
+	return GetLocalRole() == ROLE_AutonomousProxy || GetRemoteRole() == ROLE_AutonomousProxy;
+}
+
 // Called when the game starts or when spawned
 void AMainCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	ConfigureOverHeadStatusWidget();
+}
+
+void AMainCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
 	
+	if (NewController && !NewController->IsPlayerController()) // 이 경우 AIController 
+	{
+		// PossessedBy함수는  only called on the server.	
+		ServerSideInit();
+	}
 }
 
 // Called every frame
@@ -54,5 +79,26 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 UAbilitySystemComponent* AMainCharacter::GetAbilitySystemComponent() const
 {
 	return MAbilitySystemComponent;
+}
+
+void AMainCharacter::ConfigureOverHeadStatusWidget()
+{
+	if (!OverHeadWidgetComponent)
+	{
+		return;
+	}
+	
+	if (IsLocallyControlledByPlayer())
+	{
+		// 로컬플레이어는 머리위에 위젯이 보 일 필요없음
+		OverHeadWidgetComponent->SetHiddenInGame(true);
+		return;
+	}
+	UOverHeadStatsGaugeWidget* OverheadStatsGuage = Cast<UOverHeadStatsGaugeWidget>(OverHeadWidgetComponent->GetUserWidgetObject());
+	if (OverheadStatsGuage)
+	{
+		OverheadStatsGuage->ConfigureWithASC(GetAbilitySystemComponent());
+		OverHeadWidgetComponent->SetHiddenInGame(false);
+	}
 }
 
