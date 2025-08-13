@@ -15,9 +15,16 @@ class YJ_GASPROJECT_API UMainAbilitySystemComponent : public UAbilitySystemCompo
 	GENERATED_BODY()
 public:
 	void ApplyInitialEffects();
-
+	void GiveInitialAbilities();
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Effects")
 	TArray<TSubclassOf<UGameplayEffect>> InitialEffects;
-	
+
+	//
+	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Abilitys")
+	TArray<TSubclassOf<UGameplayAbility>> Abilities;
+
+	// BasicAbilities : 게임의 시작부터 모든 플레이어가 기본적으로 가지고있는 능력 .the base abilities will be something that everyone has, like a common basic attack.
+	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Abilitys")
+	TArray<TSubclassOf<UGameplayAbility>> BasicAbilities;
 };

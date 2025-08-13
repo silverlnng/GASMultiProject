@@ -22,3 +22,20 @@ void UMainAbilitySystemComponent::ApplyInitialEffects()
 	}
 }
 
+void UMainAbilitySystemComponent::GiveInitialAbilities()
+{
+	// 초기화 부분은 서버에서 만 실행되어야함 . HasAuthority 으로 서버인지 체크
+	if (!GetOwner() || !GetOwner()->HasAuthority())
+		return;
+
+	for (const TSubclassOf<UGameplayAbility>& AbilityClass : Abilities)
+	{
+		GiveAbility(FGameplayAbilitySpec(AbilityClass, 0, -1, nullptr));
+	}
+
+	for (const TSubclassOf<UGameplayAbility>& AbilityClass : BasicAbilities)
+	{
+		GiveAbility(FGameplayAbilitySpec(AbilityClass, 1, -1, nullptr));
+	}
+}
+

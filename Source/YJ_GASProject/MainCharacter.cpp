@@ -6,6 +6,7 @@
 #include "Components/WidgetComponent.h"
 #include "GAS/MainAbilitySystemComponent.h"
 #include "GAS/MainAttributeSet.h"
+#include "Kismet/GameplayStatics.h"
 #include "Widget/OverHeadStatsGaugeWidget.h"
 
 // Sets default values
@@ -28,6 +29,7 @@ void AMainCharacter::ServerSideInit()
 	MAbilitySystemComponent->InitAbilityActorInfo(this, this);
 	// 서버에서 만 초기화 작업을 해주고 . 그 초기화 된 변수들은 replicate
 	MAbilitySystemComponent->ApplyInitialEffects();
+	MAbilitySystemComponent->GiveInitialAbilities();
 }
 
 void AMainCharacter::ClientSideInit()
@@ -41,7 +43,7 @@ bool AMainCharacter::IsLocallyControlledByPlayer() const
 
 	return GetController() && GetController()->IsLocalController();
 	
-	return GetLocalRole() == ROLE_AutonomousProxy || GetRemoteRole() == ROLE_AutonomousProxy;
+	// return GetLocalRole() == ROLE_AutonomousProxy || GetRemoteRole() == ROLE_AutonomousProxy;
 }
 
 // Called when the game starts or when spawned
@@ -94,11 +96,30 @@ void AMainCharacter::ConfigureOverHeadStatusWidget()
 		OverHeadWidgetComponent->SetHiddenInGame(true);
 		return;
 	}
+
+	// 로컬플레이어 외 플레이어 쪽에서 작동시키는 내용들 
+	
 	UOverHeadStatsGaugeWidget* OverheadStatsGuage = Cast<UOverHeadStatsGaugeWidget>(OverHeadWidgetComponent->GetUserWidgetObject());
 	if (OverheadStatsGuage)
 	{
 		OverheadStatsGuage->ConfigureWithASC(GetAbilitySystemComponent());
 		OverHeadWidgetComponent->SetHiddenInGame(false);
+
+		GetWorldTimerManager().ClearTimer(HeadStatGaugeVisibilityUpdateTimerHandle);
+		GetWorldTimerManager().SetTimer(HeadStatGaugeVisibilityUpdateTimerHandle, this, &AMainCharacter::UpdateHeadGaugeVisibility, HeadStatGaugeVisiblityCheckUpdateGap, true);
+	}
+}
+
+void AMainCharacter::UpdateHeadGaugeVisibility()
+{
+	// 로컬플레이어 외 다른플레이어가 작동시킬 함수
+	// 로컬플레이어를 찾아서 자신과의 거리비교. 
+	APawn* LocalPlayerPawn = UGameplayStatics::GetPlayerPawn(this, 0);
+	
+	if (LocalPlayerPawn)
+	{
+		float DistSquared = FVector::DistSquared(GetActorLocation(), LocalPlayerPawn->GetActorLocation());
+		OverHeadWidgetComponent->SetHiddenInGame(DistSquared > HeadStatGaugeVisiblityRangeSquared);
 	}
 }
 
