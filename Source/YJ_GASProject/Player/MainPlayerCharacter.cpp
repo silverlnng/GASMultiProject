@@ -12,13 +12,19 @@ AMainPlayerCharacter::AMainPlayerCharacter()
 {
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>("Camera Boom");
 	CameraBoom->SetupAttachment(GetRootComponent());
+	
+	// 카메라가 Control 의 회전값을 받도록
 	CameraBoom->bUsePawnControlRotation = true;
 
 	ViewCam = CreateDefaultSubobject<UCameraComponent>("View Cam");
 	ViewCam->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 
+	// bUseControllerRotationYaw =true 로 하면 실제 로 캐릭터Yaw 도 회전을 함
 	bUseControllerRotationYaw = false;
+
+	// 가려는 방향으로 캐릭터가 회전하게 함
 	GetCharacterMovement()->bOrientRotationToMovement = true;
+	// 얼마나 빠르게 회전할지 
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 720.f, 0.f);
 }
 
@@ -59,6 +65,7 @@ void AMainPlayerCharacter::HandleLookInput(const FInputActionValue& InputActionV
 {
 	FVector2D InputVal = InputActionValue.Get<FVector2D>();
 
+	// AddController 에게 값을 주는 것. 그래서 CameraBoom 이 controller 의 회전값을 받는것
 	AddControllerPitchInput(-InputVal.Y);
 	AddControllerYawInput(InputVal.X);
 }

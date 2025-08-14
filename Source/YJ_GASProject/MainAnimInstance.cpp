@@ -4,6 +4,7 @@
 #include "MainAnimInstance.h"
 
 #include "GameFramework/Character.h"
+#include "Kismet/KismetMathLibrary.h"
 
 void UMainAnimInstance::NativeInitializeAnimation()
 {
@@ -18,6 +19,16 @@ void UMainAnimInstance::NativeInitializeAnimation()
 void UMainAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
+	if (OwnerCharacter)
+	{
+		Speed = OwnerCharacter->GetVelocity().Length();
+		FRotator BodyRot = OwnerCharacter->GetActorRotation();
+		FRotator BodyRotDelta = UKismetMathLibrary::NormalizedDeltaRotator(BodyRot, BodyPrevRot);
+		BodyPrevRot = BodyRot;
+
+		YawSpeed = BodyRotDelta.Yaw / DeltaSeconds;
+		SmoothedYawSpeed = UKismetMathLibrary::FInterpTo(SmoothedYawSpeed, YawSpeed, DeltaSeconds, YawSpeedSmoothLerpSpeed);
+	}
 }
 
 void UMainAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSeconds)

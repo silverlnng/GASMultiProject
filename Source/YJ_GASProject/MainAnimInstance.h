@@ -44,5 +44,11 @@ private:
 	UPROPERTY()
 	class UCharacterMovementComponent* OwnerMovementComp;
 
-	float Speed;	
+	float Speed;
+	float YawSpeed;
+	float SmoothedYawSpeed;
+	UPROPERTY(EditAnywhere, Category = "Animation")
+	float YawSpeedSmoothLerpSpeed = 1.f;
+
+	FRotator BodyPrevRot;
 };
