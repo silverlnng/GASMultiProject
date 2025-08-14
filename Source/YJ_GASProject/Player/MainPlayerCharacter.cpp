@@ -80,15 +80,21 @@ void AMainPlayerCharacter::HandleMoveInput(const FInputActionValue& InputActionV
 
 FVector AMainPlayerCharacter::GetLookRightDir() const
 {
+	// 카메라를 기준으로 움직일려는방향을 구하기 
 	return ViewCam->GetRightVector();
 }
 
 FVector AMainPlayerCharacter::GetLookFwdDir() const
 {
+	// 카메라를 기준으로 움직일려는방향을 구하기 
 	return ViewCam->GetForwardVector();
 }
 
 FVector AMainPlayerCharacter::GetMoveFwdDir() const
 {
+	// Z 축에 대한 정보는 사용안함
+	// CrossProduct : 외적
+	// 월드의 UP 방향과 외적으로 , 카메라가 아래 땅을 보고있어도 월드 UP과 수직인 앞방향이 구해진다.
+	// 결과적으로 "카메라기준"으로 Forward 방향을 구함
 	return FVector::CrossProduct(GetLookRightDir(), FVector::UpVector);
 }

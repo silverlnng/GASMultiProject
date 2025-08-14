@@ -1,12 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "GAS/MainAbilitySystemStatics.h"
+#include "MainAbilitySystemStatics.h"
 
-MainAbilitySystemStatics::MainAbilitySystemStatics()
+FGameplayTag UMainAbilitySystemStatics::GetBasicAttackAbilityTag()
 {
-}
-
-MainAbilitySystemStatics::~MainAbilitySystemStatics()
-{
+	// RequestGameplayTag 함수안에 InitializeManager 가 있음
+	return FGameplayTag::RequestGameplayTag("Ability.BasicAttack");
 }

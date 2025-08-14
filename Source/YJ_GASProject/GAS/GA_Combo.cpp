@@ -2,10 +2,18 @@
 
 
 #include "GA_Combo.h"
+#include "MainAbilitySystemStatics.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 
+UGA_Combo::UGA_Combo()
+{
+	// 에디터창에서 할당한 태그를 c++ 에서 할당하기 
+	AbilityTags.AddTag(UMainAbilitySystemStatics::GetBasicAttackAbilityTag());
+	BlockAbilitiesWithTag.AddTag(UMainAbilitySystemStatics::GetBasicAttackAbilityTag());
+}
+
 void UGA_Combo::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
-	const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
+                                const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 
 	// GameAbility 를 활성화 하기 전에 체크해야하는 것
