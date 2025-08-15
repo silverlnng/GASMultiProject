@@ -37,6 +37,11 @@ public:
 	UFUNCTION(BlueprintCallable, meta=(BlueprintThreadSafe))
 	FORCEINLINE bool IsNotMoving() const { return Speed == 0; }
 	
+	UFUNCTION(BlueprintCallable, meta=(BlueprintThreadSafe))
+	FORCEINLINE float GetYawSpeed() const { return YawSpeed; }
+
+	UFUNCTION(BlueprintCallable, meta=(BlueprintThreadSafe))
+	FORCEINLINE float GetSmoothedYawSpeed() const { return SmoothedYawSpeed; }
 private:
 	UPROPERTY()
 	class ACharacter* OwnerCharacter;

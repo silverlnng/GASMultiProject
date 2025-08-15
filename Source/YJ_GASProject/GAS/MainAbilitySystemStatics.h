@@ -9,7 +9,7 @@
  * 
  */
 UCLASS()
-class YJ_GASPROJECT_API UMainAbilitySystemStatics
+class YJ_GASPROJECT_API UMainAbilitySystemStatics : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
 public:
