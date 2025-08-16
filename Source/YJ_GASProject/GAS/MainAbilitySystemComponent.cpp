@@ -28,14 +28,19 @@ void UMainAbilitySystemComponent::GiveInitialAbilities()
 	if (!GetOwner() || !GetOwner()->HasAuthority())
 		return;
 
-	for (const TSubclassOf<UGameplayAbility>& AbilityClass : Abilities)
+
+	// Input ID 와 UGameplayAbility 을 대응시킴
+	
+	for (const TPair<EMainAbilityInputID,TSubclassOf<UGameplayAbility>>& AbilityPair : Abilities)
 	{
-		GiveAbility(FGameplayAbilitySpec(AbilityClass, 0, -1, nullptr));
+		GiveAbility(FGameplayAbilitySpec(AbilityPair.Value, 0, (int32)AbilityPair.Key, nullptr));
+	}
+	
+	for (const TPair<EMainAbilityInputID,TSubclassOf<UGameplayAbility>>& AbilityPair : BasicAbilities)
+	{
+		GiveAbility(FGameplayAbilitySpec(AbilityPair.Value, 1, (int32)AbilityPair.Key, nullptr));
 	}
 
-	for (const TSubclassOf<UGameplayAbility>& AbilityClass : BasicAbilities)
-	{
-		GiveAbility(FGameplayAbilitySpec(AbilityClass, 1, -1, nullptr));
-	}
 }
+
 

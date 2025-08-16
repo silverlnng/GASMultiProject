@@ -2,6 +2,8 @@
 
 
 #include "MainPlayerCharacter.h"
+
+#include "AbilitySystemComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "Camera/CameraComponent.h"
@@ -57,7 +59,13 @@ void AMainPlayerCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 		EnhancedInputComp->BindAction(JumpInputAction, ETriggerEvent::Triggered, this, &AMainPlayerCharacter::Jump);
 		EnhancedInputComp->BindAction(LookInputAction, ETriggerEvent::Triggered, this, &AMainPlayerCharacter::HandleLookInput);
 		EnhancedInputComp->BindAction(MoveInputAction, ETriggerEvent::Triggered, this, &AMainPlayerCharacter::HandleMoveInput);
-	
+
+		for (const TPair<EMainAbilityInputID, UInputAction*>& InputActionPair : GameplayAbilityInputActions)
+		{
+			// Value : InputAction 이 들어올때 AMainPlayerCharacter::HandleAbilityInput 함수를 실행하면서 Key : EMainAbilityInputID 도 전달
+			EnhancedInputComp->BindAction(InputActionPair.Value, ETriggerEvent::Triggered, this, &AMainPlayerCharacter::HandleAbilityInput, InputActionPair.Key);
+		}
+		
 	}
 }
 
@@ -76,6 +84,19 @@ void AMainPlayerCharacter::HandleMoveInput(const FInputActionValue& InputActionV
 	InputVal.Normalize();
 	
 	AddMovementInput(GetMoveFwdDir()*InputVal.Y + GetLookRightDir() * InputVal.X);
+}
+
+void AMainPlayerCharacter::HandleAbilityInput(const FInputActionValue& InputActionValue, EMainAbilityInputID InputID)
+{
+	bool bPressed = InputActionValue.Get<bool>();
+	if (bPressed)
+	{
+		GetAbilitySystemComponent()->AbilityLocalInputPressed((int32)InputID);
+	}
+	else
+	{
+		GetAbilitySystemComponent()->AbilityLocalInputReleased((int32)InputID);
+	}
 }
 
 FVector AMainPlayerCharacter::GetLookRightDir() const

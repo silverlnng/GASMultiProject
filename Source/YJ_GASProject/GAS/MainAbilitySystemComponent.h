@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemComponent.h"
+#include "MainGameplayAbilityTypes.h"
 #include "MainAbilitySystemComponent.generated.h"
 
 /**
@@ -19,12 +20,11 @@ public:
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Effects")
 	TArray<TSubclassOf<UGameplayEffect>> InitialEffects;
-
-	//
-	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Abilitys")
-	TArray<TSubclassOf<UGameplayAbility>> Abilities;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Ability")
+	TMap<EMainAbilityInputID, TSubclassOf<UGameplayAbility>> Abilities;
 
 	// BasicAbilities : 게임의 시작부터 모든 플레이어가 기본적으로 가지고있는 능력 .the base abilities will be something that everyone has, like a common basic attack.
-	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Abilitys")
-	TArray<TSubclassOf<UGameplayAbility>> BasicAbilities;
+	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Ability")
+	TMap<EMainAbilityInputID, TSubclassOf<UGameplayAbility>> BasicAbilities;
 };
